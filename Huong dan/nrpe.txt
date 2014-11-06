@@ -1,0 +1,87 @@
+########################################################################
+#### Host Linux can duoc monitor (remote host) - Ubuntu Server 1404 ####
+########################################################################
+
+wget  http://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz/download?use_mirror=cznic&r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnagios%2Ffiles%2Fnrpe-2.x%2Fnrpe-2.15%2Fnrpe-2.15.tar.gz%2Fdownload&use_mirror=cznic
+mv nrpe-2.15.tar.gz\?r\=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnagios%2Ffiles%2Fnrpe-2.x%2Fnrpe-2.15%2F nrpe-2.1.5.tar.gz
+tar -xvf nrpe-2.1.5.tar.gz
+cd nrpe-2.15/
+useradd nagios
+apt-get install libssl-dev xinetd nagios-plugins -y
+./configure --with-ssl=/usr/lib/x86_64-linux-gnu
+make all
+make install-plugin
+make install-daemon
+make  install-daemon-config
+make install-xinetd
+/etc/init.d/xinetd restart
+scp /usr/local/nagios/libexec/check_nrpe root@10.145.34.130:/usr/lib/nagios/plugins/
+vi /etc/xinetd.d/nrpe
+	only_from       = 10.145.34.130
+vi /usr/local/nagios/etc/nrpe.cfg
+	command[check_users]=/usr/lib/nagios/plugins/check_users -w 5 -c 10
+	command[check_load]=/usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+	command[check_hda1]=/usr/lib/nagios/plugins/check_disk -w 20% -c 10% -p /dev/hda1
+	command[check_zombie_procs]=/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z
+	command[check_total_procs]=/usr/lib/nagios/plugins/check_procs -w 150 -c 200
+/usr/lib/nagios/plugins/check_load -w 15,10,5 -c 30,25,20
+/etc/init.d/xinetd restart
+
+update-rc.d xinetd defaults
+
+
+######################################
+##### host monitor (shinken host) ####
+######################################
+
+# kiem tra ket noi nrpe
+/usr/lib/nagios/plugins/check_nrpe -H 10.145.34.131 -c check_users
+
+# set uid cho commnad check_icmp (su dung neu gap loi Warning: This plugin must be either run as root or setuid root.)
+chmod u+s /usr/lib/nagios/plugins/check_icmp 
+
+su - shinken
+shinken install booster-nrpe
+
+cat /etc/shinken/modules/booster_nrpe.cfg
+	define module {
+    module_name     booster-nrpe
+    module_type     nrpe_poller
+	}
+vi /etc/shinken/pollers/poller-master.cfg
+	modules     booster-nrpe
+
+# define host "test"
+cat /etc/shinken/hosts/test.cfg
+	define host{
+    use                     generic-host
+    host_name               test
+    address                 10.145.34.131
+    contacts                admin
+    notification_interval          30
+    notification_period            24x7
+    notification_options           d,u,r
+    notifications_enabled   1
+    check_command       check_host_alive
+    }
+# define service "test" su dung nrpe-check kiem tra user
+# co the define cac service khac co trong /usr/local/nagios/etc/nrpe.cfg tai remote host
+cat /etc/shinken/services/test.cfg
+	define service{
+    use             generic-service
+    host_name       test
+    service_description     Current Users
+    check_command   check_nrpe!check_users
+    }
+
+cat /etc/shinken/commands/check_nrpe.cfg
+	define command {
+    command_name    check_nrpe
+    command_line    $NAGIOSPLUGINSDIR$/check_nrpe -H $HOSTADDRESS$ -t 9 -u -c $ARG1$
+	}
+	
+cat /etc/shinken/commands/check_nrpe_args.cfg
+define command {
+    command_name    check_nrpe_args
+    command_line    $NAGIOSPLUGINSDIR$/check_nrpe -H $HOSTADDRESS$ -t 9 -u -c $ARG1$ -a $ARG2$ $ARG3$ $ARG4$ $ARG5$
+	}

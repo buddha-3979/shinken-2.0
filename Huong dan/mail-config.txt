@@ -1,0 +1,44 @@
+vi /etc/shinken/hosts/srv-webserver.cfg
+	define host{
+    use                     linux-ssh,http
+    host_name               webserver-local
+    address                 10.145.34.131
+    contacts                admin
+    notification_interval          30
+    notification_period            24x7
+    notification_options           d,u,r
+    notifications_enabled          1
+#   _SNMPCOMMUNITY                 public
+	_HOSTCHECK_HTTP_DOMAIN_NAME    10.145.34.131
+    _HOSTCHECK_HTTP_URI            /
+	}
+
+vi /etc/shinken/contacts/admin.cfg
+	define contact{
+    use             generic-contact
+    contact_name    admin
+    email           nguyencongduc3112@gmail.com
+    host_notifications_enabled      1
+    service_notifications_enabled   1
+    can_submit_commands             1
+    notificationways                email
+
+        is_admin        1
+	}
+
+vi /etc/shinken/notificationways/email.cfg
+	define notificationway{
+       notificationway_name            email
+       service_notification_period     24x7
+       host_notification_period        24x7
+       service_notification_options    c,w,r
+       host_notification_options       d,u,r,f,s
+       service_notification_commands   notify-service-by-email
+       host_notification_commands      notify-host-by-email    
+	}
+
+cat /etc/shinken/commands/notify-host-by-email.cfg
+	define command {
+    command_name    notify-host-by-email
+    command_line    /usr/bin/printf "%b" "Shinken Notification\n\nType:$NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\nDate/Time: $DATE$ $TIME$\n" | /usr/bin/mail -s "Host $HOSTSTATE$ alert for $HOSTNAME$" $CONTACTEMAIL$
+	}
