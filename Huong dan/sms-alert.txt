@@ -40,17 +40,36 @@ define notificationway{
        host_notification_period        24x7
        service_notification_options    c,w,r
        host_notification_options       d,u,r,f,s
-       service_notification_commands   send-sms ; send service notifications via email
-       host_notification_commands      send-sms    ; send host notifications via email
+#       service_notification_commands   send-sms ; send service notifications via email
+       host_notification_commands      send-sms-host-alert    ; send host notifications via email
 }
 
 cat /etc/shinken/commands/send-sms.cfg
 ## Notify Host by Email
 define command {
-    command_name    send-sms
-    command_line    /usr/bin/printf "%b" "Shinken Notification\tType:$NOTIFICATIONTYPE$\tHost: $HOSTNAME$\tState: $HOSTSTATE$\tDate/Time: $DATE$ $TIME$\n" | gsmsendsms -d /dev/ttyUSB0 -b 19200 0985580867
+    command_name    send-sms-host-alert
+    command_line    $PLUGINSDIR$/send-sms-host.sh $NOTIFICATIONTYPE$ $HOSTNAME$ $HOSTADDRESS$ $HOSTSTATE$ $DATE$ $TIME$ $CONTACTPAGER$
 }
 
+cat /var/lib/shinken/libexec/send-sms-host.sh
+	#!/bin/bash
+
+	NOTIFICATIONTYPE=$1
+	HOSTNAME=$2
+	HOSTADDRESS=$3
+	HOSTSTATE=$4
+	DATE=$5
+	TIME=$6
+	NUMBER=$7
+
+	textesms="Shinken Notification    Type:$NOTIFICATIONTYPE    Host: $HOSTNAME    Address: $HOSTADDRESS     State: $HOSTSTATE    Date/Time: $DATE $TIME"
+	sleep $((RANDOM%60+1))
+	gsmsendsms -d /dev/ttyUSB0 -b 19200 $NUMBER "$textesms"
+	#echo $NUMBER "$textesms"
+	exit 0
+
+chmod +x /var/lib/shinken/libexec/send-sms-host.sh
+	
 adduser shinken  dialout
 
 /etc/init.d/shinken restart
