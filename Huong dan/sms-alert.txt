@@ -1,5 +1,6 @@
 #cai dat va kiem tra usb de gui sms
 https://github.com/ducnc/caidat-tools-sms-usb3g-ubuntu
+Can dam bao USB 3g da gui SMS thanh cong bang chuong tring gsmsendsms qua cong /dev/ttyUSB0
 
 #cau hinh shinken
 cat /etc/shinken/hosts/test.cfg
