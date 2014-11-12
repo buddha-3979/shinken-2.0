@@ -39,21 +39,19 @@ define notificationway{
        service_notification_period     24x7
        host_notification_period        24x7
        service_notification_options    c,w,r
-       host_notification_options       d,u,r,f,s
-#       service_notification_commands   send-sms ; send service notifications via email
-       host_notification_commands      send-sms-host-alert    ; send host notifications via email
+       host_notification_options       d,u,r,s
+       service_notification_commands   send-sms-service-alert ; send service notifications via sms
+       host_notification_commands      send-sms-host-alert    ; send host notifications via sms
 }
 
-cat /etc/shinken/commands/send-sms.cfg
-## Notify Host by Email
+cat /etc/shinken/commands/send-sms-host-alert.cfg
 define command {
     command_name    send-sms-host-alert
     command_line    $PLUGINSDIR$/send-sms-host.sh $NOTIFICATIONTYPE$ $HOSTNAME$ $HOSTADDRESS$ $HOSTSTATE$ $DATE$ $TIME$ $CONTACTPAGER$
-}
-
+	}
+	
 cat /var/lib/shinken/libexec/send-sms-host.sh
 	#!/bin/bash
-
 	NOTIFICATIONTYPE=$1
 	HOSTNAME=$2
 	HOSTADDRESS=$3
@@ -61,12 +59,33 @@ cat /var/lib/shinken/libexec/send-sms-host.sh
 	DATE=$5
 	TIME=$6
 	NUMBER=$7
-
 	textesms="Shinken Notification    Type:$NOTIFICATIONTYPE    Host: $HOSTNAME    Address: $HOSTADDRESS     State: $HOSTSTATE    Date/Time: $DATE $TIME"
-	sleep $((RANDOM%60+1))
-	gsmsendsms -d /dev/ttyUSB0 -b 19200 $NUMBER "$textesms"
-	#echo $NUMBER "$textesms"
+	sleep $((RANDOM%30+1))
+	python /var/lib/shinken/libexec/send-sms.py $NUMBER "$textesms"
 	exit 0
+
+cat /var/lib/shinken/libexec/send-sms.py
+	'''
+	Created on Mar 19, 2014
+	@author: Python Viet Nam
+	@Edited: congto
+	'''
+	import argparse
+	import serial
+	import time
+	parser = argparse.ArgumentParser(description='Send SMS by python')
+	parser.add_argument('info',nargs=2,help='Please use the following command: python python-sms.py phone_number "Message"')
+	args = parser.parse_args()
+	def Sending(message, sender):
+		SerialPort = serial.Serial("/dev/ttyUSB0",19200)
+		SerialPort.write('AT+CMGF=1\r')
+		time.sleep(1)
+		SerialPort.write('AT+CMGS="'+sender+'"\r\n')
+		time.sleep(1)
+		SerialPort.write(message+"\x1A")
+		time.sleep(1)
+		SerialPort.close()
+	Sending(args.info[1],args.info[0])
 
 chmod +x /var/lib/shinken/libexec/send-sms-host.sh
 	
