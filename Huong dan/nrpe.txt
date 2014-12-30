@@ -3,7 +3,7 @@
 ########################################################################
 
 wget http://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz
-tar -xvf nrpe-2.1.5.tar.gz
+tar -xvf nrpe-2.15.tar.gz
 cd nrpe-2.15/
 useradd nagios
 apt-get install libssl-dev xinetd nagios-plugins -y
