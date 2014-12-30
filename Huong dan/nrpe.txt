@@ -34,6 +34,7 @@ update-rc.d xinetd defaults
 ######################################
 
 # kiem tra ket noi nrpe
+apt-get install nagios-plugins
 /usr/lib/nagios/plugins/check_nrpe -H 10.145.34.131 -c check_users
 
 # set uid cho commnad check_icmp (su dung neu gap loi Warning: This plugin must be either run as root or setuid root.)
