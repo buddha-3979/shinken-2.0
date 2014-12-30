@@ -2,8 +2,7 @@
 #### Host Linux can duoc monitor (remote host) - Ubuntu Server 1404 ####
 ########################################################################
 
-wget  http://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz/download?use_mirror=cznic&r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnagios%2Ffiles%2Fnrpe-2.x%2Fnrpe-2.15%2Fnrpe-2.15.tar.gz%2Fdownload&use_mirror=cznic
-mv nrpe-2.15.tar.gz\?r\=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnagios%2Ffiles%2Fnrpe-2.x%2Fnrpe-2.15%2F nrpe-2.1.5.tar.gz
+wget http://sourceforge.net/projects/nagios/files/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz
 tar -xvf nrpe-2.1.5.tar.gz
 cd nrpe-2.15/
 useradd nagios
