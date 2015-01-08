@@ -22,7 +22,7 @@ make install-xinetd
 `vi /etc/xinetd.d/nrpe`
 
     only_from       = 10.145.34.130
-    Sửa lại IP 10.145.34.130 thành IP của shinken server
+    #Sửa lại IP 10.145.34.130 thành IP của shinken server
 
 `vi /usr/local/nagios/etc/nrpe.cfg`
 
@@ -65,16 +65,20 @@ shinken install booster-nrpe
 ```
 
 `vi /etc/shinken/modules/booster_nrpe.cfg`
+
 	define module {
     module_name     booster-nrpe
     module_type     nrpe_poller
 	}
 
 `vi /etc/shinken/pollers/poller-master.cfg`
+
 	modules     booster-nrpe
 
 Định nghĩa host "test" cần monitor
+
 `vi /etc/shinken/hosts/test.cfg`
+
 	define host{
     use                     generic-host
     host_name               test
@@ -88,7 +92,9 @@ shinken install booster-nrpe
     }
 
 Định nghĩa các service cần test với host "test"
+
 `vi /etc/shinken/services/test.cfg`
+
 	define service{
     use             generic-service
     host_name       test    ;phải giống hostname đã định nghĩa bên trên
@@ -97,12 +103,14 @@ shinken install booster-nrpe
     }
 
 `vi /etc/shinken/commands/check_nrpe.cfg`
+
 	define command {
     command_name    check_nrpe
     command_line    $NAGIOSPLUGINSDIR$/check_nrpe -H $HOSTADDRESS$ -t 9 -u -c $ARG1$
 	}
 	
 `vi /etc/shinken/commands/check_nrpe_args.cfg`
+
     define command {
     command_name    check_nrpe_args
     command_line    $NAGIOSPLUGINSDIR$/check_nrpe -H $HOSTADDRESS$ -t 9 -u -c $ARG1$ -a $ARG2$ $ARG3$ $ARG4$ $ARG5$
