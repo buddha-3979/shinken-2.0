@@ -46,7 +46,7 @@ Bổ sung sau
 
 ####2.3. Giám sát một Switch Cisco
 
-[Hướng dẫn](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/shinken-switch-snmp.txt)
+[Hướng dẫn](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/shinken-switch-snmp.md)
 
 ###3. Cài đặt cảnh báo
 
@@ -54,11 +54,11 @@ Bổ sung sau
 
 Đầu tiên bạn cần tạo một tài khoản Gmail. Sau đó tại máy chủ Shinken bạn cài thêm một SMTP client (Postfix hoặc SSMTP)
 
-- [Cài đặt Postfix SMTP client trên Shinken Server để gửi mail](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/install-postfix.txt)
+- [Cài đặt Postfix SMTP client trên Shinken Server để gửi mail](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/install-postfix.md)
 
-- [Hoặc cài đặt SSMTP trên Shinken Server](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/install%20ssmnp.txt)
+- [Hoặc cài đặt SSMTP trên Shinken Server](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/install%20ssmnp.md)
 
-Cuối cùng [cấu hình shinken để gửi mail] (https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/mail-config.txt)
+- Cuối cùng [cấu hình shinken để gửi mail] (https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/mail-config.md)
 
 ***Lưu ý:*** 
 
@@ -69,11 +69,11 @@ Có thể tham khảo tại [link 1](https://accounts.google.com/DisplayUnlockCa
 
 ####3.2. Sử dụng USB 3G gửi SMS
 
-[Hướng dẫn cấu hình để gửi SMS cảnh báo bằng USB 3G](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/sms-alert.txt)
+[Hướng dẫn cấu hình để gửi SMS cảnh báo bằng USB 3G](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/sms-alert.md)
 
 
 ###4. Tích hợp Shinken với các công cụ khác để hiển thị dữ liệu
 
-- [Tích hợp Shinken và Pnp4nagios](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/pnp4nagios.txt)
+- [Tích hợp Shinken và Pnp4nagios](https://github.com/ducnc/shinken-20-monitor/blob/master/Huong%20dan/pnp4nagios.md)
 
-- Tích hợp Shinken và Grapite (bổ sung sau)
+- [Tích hợp Shinken và Grapite](http://www.shinken-monitoring.org/wiki/use_with_graphite)
