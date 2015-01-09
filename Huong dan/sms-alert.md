@@ -24,6 +24,7 @@ Cần đảm bảo USB 3g đã gửi SMS thành công bằng chương trình gsm
 
 
 `vi /etc/shinken/contacts/admin.cfg`
+
     define contact{
     use             generic-contact
     contact_name    admin
@@ -37,6 +38,7 @@ Cần đảm bảo USB 3g đã gửi SMS thành công bằng chương trình gsm
     }
 
 `vi /etc/shinken/notificationways/sms.cfg`
+
     define notificationway{
     notificationway_name            sms
     service_notification_period     24x7
@@ -48,12 +50,14 @@ Cần đảm bảo USB 3g đã gửi SMS thành công bằng chương trình gsm
     }
 
 `vi /etc/shinken/commands/send-sms-host-alert.cfg`
+
     define command {
     command_name    send-sms-host-alert
     command_line    $PLUGINSDIR$/send-sms-host.sh $NOTIFICATIONTYPE$ $HOSTNAME$ $HOSTADDRESS$ $HOSTSTATE$ $DATE$ $TIME$ $CONTACTPAGER$
     }
 	
 `vi /var/lib/shinken/libexec/send-sms-host.sh`
+
     #!/bin/bash
     NOTIFICATIONTYPE=$1
     HOSTNAME=$2
