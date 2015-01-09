@@ -102,6 +102,8 @@ shinken install booster-nrpe
     check_command   check_nrpe!check_users
     }
 
+Định nghĩa các command để sử dụng:
+
 `vi /etc/shinken/commands/check_nrpe.cfg`
 
     define command {
